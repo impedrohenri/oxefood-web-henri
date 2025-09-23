@@ -2,6 +2,7 @@ import axios from 'axios';
 import InputMask from 'comigo-tech-react-input-mask';
 import { useState } from 'react';
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
+import MenuSistema from '../../MenuSistema';
 
 export default function FormCliente() {
 
@@ -14,27 +15,30 @@ export default function FormCliente() {
 
     const salvar = () => {
 
-		let clienteRequest = {
-		     nome: nome,
-		     cpf: cpf,
-		     dataNascimento: dataNascimento,
-		     foneCelular: foneCelular,
-		     foneFixo: foneFixo
-		}
-	
-		axios.post("http://localhost:8080/api/cliente", clienteRequest)
-		.then((response) => {
-		     console.log('Cliente cadastrado com sucesso.')
-		})
-		.catch((error) => {
-		     console.log('Erro ao incluir o um cliente.')
-		})
+        let clienteRequest = {
+            nome: nome,
+            cpf: cpf,
+            dataNascimento: dataNascimento,
+            foneCelular: foneCelular,
+            foneFixo: foneFixo
+        }
+
+        axios.post("http://localhost:8080/api/cliente", clienteRequest)
+            .then((response) => {
+                console.log('Cliente cadastrado com sucesso.')
+            })
+            .catch((error) => {
+                console.log('Erro ao incluir o um cliente.')
+            })
 
     }
 
     return (
 
         <div>
+
+            <MenuSistema tela={'cliente'} />
+
 
             <div style={{ marginTop: '3%' }}>
 
@@ -138,7 +142,7 @@ export default function FormCliente() {
                                 labelPosition='left'
                                 color='blue'
                                 floated='right'
-                                onClick={() => {salvar()}}
+                                onClick={() => { salvar() }}
                             >
                                 <Icon name='save' />
                                 Salvar
