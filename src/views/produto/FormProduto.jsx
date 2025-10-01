@@ -1,9 +1,13 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Container, Divider, Form, Icon } from "semantic-ui-react";
 import MenuSistema from "../../MenuSistema";
+import { Link, useLocation } from "react-router-dom";
 
 export default function FormProduto() {
+
+    const { state } = useLocation();
+    const [produtoId, setProdutoId] = useState("");
 
     const [codigo, setCodigo] = useState("");
     const [titulo, setTitulo] = useState("");
@@ -11,6 +15,22 @@ export default function FormProduto() {
     const [valorUnitario, setValorUnitario] = useState(0);
     const [tempoEntregaMinimo, setTempoEntregaMinimo] = useState(0);
     const [tempoEntregaMaximo, setTempoEntregaMaximo] = useState(0);
+
+    useEffect(() => {
+        if (state != null && state.id != null) {
+            axios.get(`http://localhost:8080/api/produto/${state.id}`)
+            .then((res) => {
+                setProdutoId(res.data.id)
+                setCodigo(res.data.codigo)
+                setTitulo(res.data.titulo)
+                setDescricao(res.data.descricao)
+                setValorUnitario(res.data.valorUnitario)
+                setTempoEntregaMinimo(res.data.tempoEntregaMinimo)
+                setTempoEntregaMaximo(res.data.tempoEntregaMaximo)
+            })
+        }
+    }, [])
+
 
     const salvar = () => {
 
@@ -24,15 +44,23 @@ export default function FormProduto() {
         }
 
         console.log(produtoRequest)
-
-        axios.post("http://localhost:8080/api/produto", produtoRequest)
-        .then((response) => {
-		     console.log('Cliente cadastrado com sucesso.')
-		})
-		.catch((error) => {
-		     console.log('Erro ao incluir o um cliente.')
-		})
-
+        if (state != null && state.id != null) {
+            axios.put("http://localhost:8080/api/produto/" + produtoId, produtoRequest)
+            .then((response) => {
+                console.log('Produto alterado com sucesso.')
+            })
+            .catch((error) => {
+                console.log('Erro ao incluir o um cliente.')
+            })
+        } else {
+            axios.post("http://localhost:8080/api/produto", produtoRequest)
+            .then((response) => {
+                console.log('Produto cadastrado com sucesso.')
+            })
+            .catch((error) => {
+                console.log('Erro ao incluir o um cliente.')
+            })
+        }
     }
 
     return (
@@ -70,9 +98,9 @@ export default function FormProduto() {
                     </div>
 
                     <Container fluid>
-                        <Button content='Listar' icon='reply' labelPosition='left' color='yellow' basic style={{ borderRadius: '999px' }} />
+                        <Link to='/list-produto'><Button content='Listar' icon='reply' labelPosition='left' color='yellow' basic style={{ borderRadius: '999px' }} /></Link>
 
-                        <Button content='Salvar' icon='save' labelPosition='left' color='blue' basic circular floated='right' onClick={() => {salvar()}}/>
+                        <Button content='Salvar' icon='save' labelPosition='left' color='blue' basic circular floated='right' onClick={() => { salvar() }} />
                     </Container>
 
                 </Container>

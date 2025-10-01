@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Container, Divider, Icon, Table } from "semantic-ui-react";
+import MenuSistema from "../../MenuSistema";
 
 export default function ListProdutos() {
 
@@ -13,7 +14,7 @@ export default function ListProdutos() {
 
     function carregarLista() {
 
-        axios.get("http://localhost:8080/api/produtos")
+        axios.get("http://localhost:8080/api/produto")
             .then((response) => {
                 setLista(response.data)
             })
@@ -22,6 +23,8 @@ export default function ListProdutos() {
 
     return (
         <div>
+            <MenuSistema tela={'produto'} />
+            
             <div style={{ marginTop: '3%' }}>
 
                 <Container textAlign='justified' >
@@ -75,7 +78,7 @@ export default function ListProdutos() {
                                                 color='green'
                                                 title='Clique aqui para editar os dados deste produto'
                                                 icon>
-                                                <Icon name='edit' />
+                                                <Link to='/form-produto' state={{id: produto.id}}><Icon name='edit' /></Link>
                                             </Button> &nbsp;
                                             <Button
                                                 inverted
