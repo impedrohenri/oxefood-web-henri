@@ -41,6 +41,13 @@ export default function MenuSistema(props) {
                     to='/list-categoria'
                 />
 
+                <Menu.Item
+                    content='Cidade'
+                    active={props.tela === 'cidade'}
+                    as={Link}
+                    to='/list-cidade'
+                />
+
             </Menu>
         </>
     )
