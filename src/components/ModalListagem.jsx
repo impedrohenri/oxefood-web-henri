@@ -24,7 +24,12 @@ export default function ModalListagem({ isOpen, setIsOpen, titulo, lista, client
                     <p>Nenhum dado disponível.</p>
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button basic color='red' inverted onClick={() => setIsOpen(false)}>
+                    <Link to={'/form-endereco'} state={{ clienteId: clienteID }} >
+                        <Button color='green' inverted>
+                            <Icon name='plus' /> Adicionar
+                        </Button>
+                    </Link>
+                    <Button color='red' inverted onClick={() => setIsOpen(false)}>
                         <Icon name='remove' /> Fechar
                     </Button>
                 </Modal.Actions>
@@ -90,7 +95,7 @@ export default function ModalListagem({ isOpen, setIsOpen, titulo, lista, client
                 </Table>
             </Modal.Content>
             <Modal.Actions>
-                <Link to={'/form-endereco'} state={{clienteId: clienteID}} >
+                <Link to={'/form-endereco'} state={{ clienteId: clienteID }} >
                     <Button color='green' inverted>
                         <Icon name='plus' /> Adicionar
                     </Button>
