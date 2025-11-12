@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, Container, Divider, Form, Icon } from "semantic-ui-react";
+import { Button, Container, Divider, Form, Icon, Image } from "semantic-ui-react";
 import MenuSistema from "../../MenuSistema";
 import { Link, useLocation } from "react-router-dom";
+import { notifyError, notifySuccess } from "../util/Util";
 
 export default function FormProduto() {
 
@@ -19,6 +20,8 @@ export default function FormProduto() {
     const [listaCategoria, setListaCategoria] = useState([]);
     const [idCategoria, setIdCategoria] = useState();
 
+    const [imagem, setImagem] = useState(null);
+    const [preview, setPreview] = useState(null);
 
     useEffect(() => {
         if (state != null && state.id != null) {
@@ -32,6 +35,7 @@ export default function FormProduto() {
                     setTempoEntregaMinimo(res.data.tempoEntregaMinimo)
                     setTempoEntregaMaximo(res.data.tempoEntregaMaximo)
                     setIdCategoria(res.data.idCategoria)
+                    setImagem(res.data.imagem)
                 })
         }
 
@@ -43,6 +47,40 @@ export default function FormProduto() {
             })
 
     }, [])
+
+
+    const handleImagemChange = (event) => {
+
+        const file = event.target.files[0];
+        setImagem(file);
+
+        // Gera uma URL para visualização da imagem
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setPreview(null);
+        }
+    };
+
+    function atualizaImagem(idProduto) {
+
+        let formData = new FormData();
+        formData.append('imagem', imagem);
+
+        axios.post("http://localhost:8080/api/produto/" + idProduto, formData)
+            .then((response) => {
+                notifySuccess('Imagem cadastrada com sucesso.')
+            })
+            .catch((error) => {
+                if (error.response) {
+                    notifyError(error.response.data.errors[0].defaultMessage)
+                }
+            })
+    }
 
 
     const salvar = () => {
@@ -61,18 +99,20 @@ export default function FormProduto() {
         if (state != null && state.id != null) {
             axios.put("http://localhost:8080/api/produto/" + produtoId, produtoRequest)
                 .then((response) => {
-                    console.log('Produto alterado com sucesso.')
+                    notifySuccess('Produto alterado com sucesso.')
+                    atualizaImagem(produtoId);
                 })
                 .catch((error) => {
-                    console.log('Erro ao incluir o um cliente.')
+                    notifyError('Erro ao incluir o um cliente.')
                 })
         } else {
             axios.post("http://localhost:8080/api/produto", produtoRequest)
                 .then((response) => {
-                    console.log('Produto cadastrado com sucesso.')
+                    notifySuccess('Produto cadastrado com sucesso.')
+                    atualizaImagem(response.data.id)
                 })
                 .catch((error) => {
-                    console.log('Erro ao incluir o um cliente.')
+                    notifyError('Erro ao incluir o um produto.')
                 })
         }
     }
@@ -90,6 +130,24 @@ export default function FormProduto() {
 
                     <div style={{ marginTop: '4%' }}>
                         <Form>
+
+                            <Form.Input
+                                label="Imagem do Produto"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImagemChange}
+                            />
+
+                            {preview && (
+                                <Image src={preview} size="small" bordered style={{ marginTop: '1em' }} />
+                            )}
+                            {!preview && imagem && (
+                                <Image src={`imagens_cadastradas/${imagem}`} bordered style={{ marginTop: '1em' }} />
+                            )}
+
+                            <br />
+
+
                             <Form.Group>
                                 <Form.Input label='Título' placeholder='Informe o título do produto' width={10} fluid value={titulo} onChange={(e) => { setTitulo(e.target.value) }} required />
 

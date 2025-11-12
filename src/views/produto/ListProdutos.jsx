@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Container, Divider, Form, Header, Icon, Menu, Modal, Segment, Table } from "semantic-ui-react";
+import { Button, Container, Divider, Form, Header, Icon, Image, Menu, Modal, Segment, Table } from "semantic-ui-react";
 import MenuSistema from "../../MenuSistema";
 
 
@@ -26,10 +26,11 @@ export default function ListProdutos() {
 
         axios.get("http://localhost:8080/api/produto")
             .then((response) => {
-                setLista(response.data)
+                setLista(response.data);
+                console.log(response)
             })
 
-        axios.get("http://localhost:8080/api/categoriaproduto")
+        axios.get("http://localhost:8080/api/categoria-produto")
             .then((response) => {
 
                 const dropDownCategorias = [];
@@ -37,7 +38,8 @@ export default function ListProdutos() {
                 response.data.map(c => (
                     dropDownCategorias.push({ text: c.descricao, value: c.id })
                 ))
-
+                
+                console.log(">>>>>>>>>", response)
                 setListaCategoriaProduto(dropDownCategorias)
 
             })
@@ -195,6 +197,7 @@ export default function ListProdutos() {
 
                             <Table.Header>
                                 <Table.Row>
+                                    <Table.HeaderCell>Imagem</Table.HeaderCell>
                                     <Table.HeaderCell>Código</Table.HeaderCell>
                                     <Table.HeaderCell>Título</Table.HeaderCell>
                                     <Table.HeaderCell size={"large"} >Categoria</Table.HeaderCell>
@@ -211,6 +214,7 @@ export default function ListProdutos() {
                                 {lista.map(produto => (
 
                                     <Table.Row key={produto.id}>
+                                        <Image src={`imagens_cadastradas/${produto.imagem}`} />
                                         <Table.Cell>{produto.codigo}</Table.Cell>
                                         <Table.Cell>{produto.titulo}</Table.Cell>
                                         <Table.Cell>{produto.categoria?.descricao}</Table.Cell>
