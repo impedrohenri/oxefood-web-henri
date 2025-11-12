@@ -6,6 +6,7 @@ import MenuSistema from '../../MenuSistema';
 import { Link, useLocation } from 'react-router-dom';
 import formatarData from '../../utils/FormatarData';
 import ModalCadastroEndereco from './endereco/ModalCadastroEndereco';
+import { notifyError, notifySuccess } from '../util/Util';
 
 export default function FormCliente() {
 
@@ -53,12 +54,22 @@ export default function FormCliente() {
                 .then((response) => { console.log('Cliente alterado com sucesso.') })
                 .catch((error) => { console.log('Erro ao alter um cliente.') })
         } else { //Cadastro:
+            clienteRequest.email = "teste@emil.com"
+            clienteRequest.password = "senahtetse"
             await axios.post("http://localhost:8080/api/cliente", clienteRequest)
                 .then((response) => {
-                    console.log('Cliente cadastrado com sucesso.', response.data.id);
+                    notifySuccess('Cliente cadastrado com sucesso.', response.data.id);
                     setIdNovoCliente(response.data.id)
                 })
-                .catch((error) => { console.log('Erro ao incluir o cliente.') })
+                .catch((error) => {
+                    if (error.response.data.errors != undefined) {
+                        for (let i = 0; i < error.response.data.errors.length; i++) {
+                            notifyError(error.response.data.errors[i].defaultMessage)
+                        }
+                    } else {
+                        notifyError(error.response.data.message)
+                    }
+                })
 
             if (!!enderecoRequest) {
                 axios.post("http://localhost:8080/api/cliente/endereco/" + idNovoCliente, enderecoRequest)

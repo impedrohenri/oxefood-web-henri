@@ -49,7 +49,7 @@ export default function ListCliente() {
                     })
             })
             .catch((error) => {
-                console.log('Erro ao remover um cliente.')
+                console.log('Erro ao remover um cliente.', error)
             })
         setOpenModal(false)
     }
