@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Container, Divider, Header, Icon, Modal, Table } from "semantic-ui-react";
+import { Button, Container, Divider, Form, Header, Icon, Menu, Modal, Segment, Table } from "semantic-ui-react";
 import MenuSistema from "../../MenuSistema";
 
 
@@ -13,6 +13,7 @@ export default function ListProdutos() {
     const [titulo, setTitulo] = useState();
     const [idCategoria, setIdCategoria] = useState();
     const [listaCategoriaProduto, setListaCategoriaProduto] = useState([]);
+    const [listaProdutos, setListaProdutos] = useState([]);
 
 
     const [lista, setLista] = useState([]);
